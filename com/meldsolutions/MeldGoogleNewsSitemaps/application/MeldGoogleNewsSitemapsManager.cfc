@@ -113,7 +113,7 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 				   tcontent.contentHistID,
 				   tcontent.filename,
 				   tcontent.lastupdate,
-				   attributeValue AS isExclude,
+				   tclassextenddata.attributeValue AS isExclude,
 				   tcontent.path,
 				   tcontent.ReleaseDate,
 				   tcontent.metakeywords,
@@ -131,13 +131,14 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 			JOIN
 				tclassextendsets
 				ON
-					tclassextend.subTypeID = tclassextendsets.subTypeID
+					( tclassextend.subTypeID = tclassextendsets.subTypeID
+					AND tclassextendsets.name = 'Google News Sitemaps' )					
 			JOIN
 				tclassextendattributes
 				ON
 					tclassextendsets.extendsetID = tclassextendattributes.extendsetID
 				AND
-					tclassextendattributes.name = 'exclude'
+					tclassextendattributes.name = 'newsxml_exclude'
 			LEFT JOIN
 				tclassextenddata
 				ON
@@ -167,7 +168,8 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 			AND
 			(
 				( 
-					tcontent.display = 1 OR tcontent.display = 2 
+					   tcontent.display = 1 
+					OR tcontent.display = 2 
 				)
 				AND 
 				(
@@ -177,7 +179,7 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 				)
 			)
 		</cfquery>
-		
+
 		<cfloop query="qList">
 			<cfset sValues = StructNew() />
 			<cfif len(qList.isExclude)>
@@ -205,20 +207,20 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 				<cfset sValues = getValues( qAtts,isExempt,valueHash ) />
 			</cfif>
 
-			<cfif not StructKeyExists( sValues,'priority' )>
-				<cfset sValues.priority = "0.5" />
+			<cfif not StructKeyExists( sValues,'newsxml_priority' )>
+				<cfset sValues.newsxml_priority = "0.5" />
 			</cfif>
-			<cfif not StructKeyExists( sValues,'changefrequency' )>
-				<cfset sValues.changefrequency = "monthly" />
+			<cfif not StructKeyExists( sValues,'newsxml_changefrequency' )>
+				<cfset sValues.newsxml_changefrequency = "monthly" />
 			</cfif>
-			<cfif not StructKeyExists( sValues,'language')>
-				<cfset sValues.language = 'en' />
+			<cfif not StructKeyExists( sValues,'newsxml_language')>
+				<cfset sValues.newsxml_language = 'en' />
 			</cfif>
-			<cfif not StructKeyExists( sValues, 'genres' )>
-				<cfset sValues.genres = "" />
+			<cfif not StructKeyExists( sValues, 'newsxml_genres' )>
+				<cfset sValues.newsxml_genres = "" />
 			</cfif>
-			<cfif not StructKeyExists( sValues, 'stock_tickers' )>
-				<cfset sValues.stock_tickers = "" />
+			<cfif not StructKeyExists( sValues, 'newsxml_stock_tickers' )>
+				<cfset sValues.newsxml_stock_tickers = "" />
 			</cfif>			
 
 			<!--- Properly formatted "Titles" cannot include any trailing parentheticals, so lop it off if it exists.
@@ -240,10 +242,10 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 							<news:news>
 								<news:publication>
 									<news:name>#formattedTitle#</news:name>
-									<news:language>#sValues.language#</news:language>
+									<news:language>#sValues.newsxml_language#</news:language>
 								</news:publication>
-								<cfif Len( sValues.genres )>
-									<news:genres>#sValues.genres#</news:genres>
+								<cfif Len( sValues.newsxml_genres )>
+									<news:genres>#sValues.newsxml_genres#</news:genres>
 								</cfif>
 								
 								<news:publication_date>#DateFormat( qList.ReleaseDate, "yyyy-mm-dd" )#</news:publication_date>
@@ -252,8 +254,8 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 								<cfif Len( Trim( qList.metakeywords ) )>
 									<news:keywords>#qList.metakeywords#</news:keywords>
 								</cfif>
-								<cfif Len( Trim( sValues.stock_tickers ) )>	
-									<news:stock_tickers>#sValues.stock_tickers#</news:stock_tickers>
+								<cfif Len( Trim( sValues.newsxml_stock_tickers ) )>	
+									<news:stock_tickers>#sValues.newsxml_stock_tickers#</news:stock_tickers>
 								</cfif>
 							</news:news>
 						</url>
@@ -326,7 +328,7 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 					WHERE
 						baseID = <cfqueryparam value="#qContentID.contentHistID#" cfsqltype="cf_sql_varchar" maxlength="35">
 					AND
-						name = 'exclude'
+						name = 'newsxml_exclude'
 				</cfquery>
 				<cfif qStatus.recordCount>
 					<cfset exemptHash[ aIDList[iiX] ] = qStatus.isExclude />

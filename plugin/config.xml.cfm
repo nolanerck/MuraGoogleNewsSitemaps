@@ -19,7 +19,7 @@
 <extensions>
 	<extension type="Page" subtype="Default">
 		<attributeset name="Google News Sitemaps">
-			<attribute name="exclude"
+			<attribute name="newsxml_exclude"
 				label="Exclude From News Sitemap"
 				hint="Exclude this page from the news sitemap"
 				type="SelectBox"
@@ -30,7 +30,7 @@
 				message=""
 				optionList="inherit^no^yes"
 				optionLabelList="Inherit^No^Yes" />
-			<attribute name="changefrequency"
+			<attribute name="newsxml_changefrequency"
 				label="Change Frequency"
 				hint="The change frequency for the page"
 				type="SelectBox"
@@ -41,7 +41,7 @@
 				message=""
 				optionList="daily^weekly^monthly^yearly"
 				optionLabelList="Daily^Weekly^Monthly^Yearly" />
-			<attribute name="priority"
+			<attribute name="newsxml_priority"
 				label="Priority"
 				hint="The relative importance of the page to the site"
 				type="SelectBox"
@@ -52,7 +52,7 @@
 				message=""
 				optionList="0.1^0.2^0.3^0.4^0.5^0.6^0.7^0.8^0.9^1.0"
 				optionLabelList="0.1^0.2^0.3^0.4^0.5^0.6^0.7^0.8^0.9^1.0" />
-			<attribute name="genres"
+			<attribute name="newsxml_genres"
 				label="Genres"
 				hint="A list of properties characterizing the content of the article."
 				type="MultiSelectBox"
@@ -60,13 +60,13 @@
 				required="false"
 				optionList="PressRelease^Satire^Blog^OpEd^Opinion^UserGenerated"
 				optionLabelList="Official Press Release^Satire^Blog^Op-Ed^Opinion (not on Op-Ed page)^User-generated newsworthy content" />
-			<attribute name="language"
+			<attribute name="newsxml_language"
 				label="Language"
 				hint="ISO 639 Language Code for this publication"
 				type="TextBox"
 				defaultValue="en"
 				required="false" />
-			<attribute name="stock_tickers"
+			<attribute name="newsxml_stock_tickers"
 				label="Stock Tickers"
 				hint="A comma-separated list of up to 5 stock tickers of the companies, mutual funds, or other financial entities that are the main subject of the article."
 				type="text"
