@@ -100,6 +100,10 @@
 				label="TimeOfDay"
 				type="TextBox"
 				validation="Date" />
+			<attribute name="ListExcludedSubtypes"
+				label="Excluded Subtypes"
+				type="TextBox"
+				defaultValue="Author" />
 		</attributeset>
 	</extension>
 </extensions>

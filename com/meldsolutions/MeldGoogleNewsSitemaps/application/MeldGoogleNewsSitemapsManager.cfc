@@ -60,6 +60,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		
 		<cfset var todaysDate = CreateODBCDateTime( Now() ) />
 		<cfset var twoDaysAgo = DateAdd( "d", -2, todaysDate ) />
+		
+		<cfset var sitemapsObject		= createObject("component","mura.extend.extendObject").init(Type="Custom",SubType="MeldGoogleNewsSitemaps",SiteID = arguments.siteID)>
+		
+		<cfset sitemapsObject.setType( "Custom" )>
+		<cfset sitemapsObject.setSubType( "MeldGoogleNewsSitemaps" )>
+		<cfset sitemapsObject.setSiteID( arguments.siteID )>
+		<cfset sitemapsObject.setID( arguments.siteID ) />	
+		<cfset sitemapsObject.getAllValues() />
+		
+		<cfset var lstExcludedSubtypes = sitemapsObject.getValue( 'ListExcludedSubtypes' ) />
 
 		<cfif useSiteID neq arguments.$.event().getValue('siteid')>
 			<cfset arguments.$ = application.serviceFactory.getBean('muraScope').init(useSiteID) />
@@ -178,6 +188,9 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 					AND tcontent.ReleaseDate >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#twoDaysAgo#" />
 				)
 			)
+			<cfif Len( lstExcludedSubtypes )>
+				AND tcontent.subtype NOT IN ( #ListQualify( lstExcludedSubtypes, "'" )# )
+			</cfif>
 		</cfquery>
 
 		<cfloop query="qList">
@@ -278,7 +291,7 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 		<cfset var qValues	= "" />
 		<cfset var sValues	= StructNew() />
 
-		<cfquery name="qStatus" dbtype="query">
+		<cfquery name="qValues" dbtype="query">
 			SELECT
 				attributeValue,name
 			FROM
@@ -287,9 +300,9 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></cfoutput></cfsavec
 				baseID = <cfqueryparam value="#arguments.contentHistID#" cfsqltype="cf_sql_varchar" maxlength="35">
 		</cfquery>
 
-		<cfif qStatus.RecordCount>
-			<cfloop query="qStatus">
-				<cfset sValues[qStatus.name] = qStatus.attributeValue />
+		<cfif qValues.RecordCount>
+			<cfloop query="qValues">
+				<cfset sValues[qValues.name] = qValues.attributeValue />
 			</cfloop>
 		</cfif>
 

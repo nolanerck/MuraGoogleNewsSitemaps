@@ -65,6 +65,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 		<cfset sitemapsObject.setValue('Frequency',rc.frequency ) />
 		<cfset sitemapsObject.setValue('Email',rc.email ) />
 		<cfset sitemapsObject.setValue('TimeOfDay',timeOfDay ) />
+		<cfset sitemapsObject.setValue( 'ListExcludedSubtypes', rc.ListExcludedSubtypes ) />
 		<cfset sitemapsObject.save() />
 
 		<cfif rc.enabled>
@@ -91,6 +92,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	<cffunction name="doGetSettings" access="private" returntype="void" output="false">
 		<cfargument name="rc" type="struct" required="false" default="#StructNew()#">
 
+		<cfset var iiX = "" />
 		<cfset var sitemapsObject	= createObject("component","mura.extend.extendObject").init(Type="Custom",SubType="MeldGoogleNewsSitemaps",SiteID=rc.siteID)>
 
 		<cfset sitemapsObject.setType("Custom")>
@@ -111,7 +113,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 			<cfset sitemapsObject.setValue('TimeOfDay',createDateTime(2011,1,1,2,0,0) ) />
 			<cfset sitemapsObject.save() />
 		</cfif>
-
+		
+		<!--- Since this paramter was added as a later addition to the plugin, sometimes it's missing on current installs.
+		      And because these are stored in the extendObject functionality, they can be tempermental if not properly
+		      set with a default. Hence my extra checking, specifically for this setting. --->
+		<cfif not sitemapsObject.valueExists( 'ListExcludedSubtypes' )>
+			<cfset sitemapsObject.setValue('ListExcludedSubtypes', '' ) />
+			<cfset sitemapsObject.save() />
+		</cfif>
+		
 		<cfset rc.sitemapsObject = sitemapsObject />
 		<cfset rc.sData			= sitemapsObject.getAllValues() />
 		
