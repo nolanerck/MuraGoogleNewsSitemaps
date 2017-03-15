@@ -13,3 +13,7 @@ and was modified as necessary to provide the "Google News Sitemap" functionality
 
 Thank you to Grant Shepert / Meld Solutions for providing the original source code and granting permission
 to modify it as needed.
+
+NOTE: As of March 2017 I've stopped testing for Mura 6 support.  As I add some new features this plugin
+will only be supported on Mura 7+.  There is now a "v6" branch with all of the original Mura 6 code you
+can use for support on older sites.
